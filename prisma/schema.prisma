@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String   @unique
+  password     String
+  refreshToken String
+  createdAt    DateTime @default(now())
+  Plan         Plan[]
+}
+
+model Plan {
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String
+  type            PlanType
+  dietPlan        Json?
+  trainingPlan    Json?
+  notes           String?
+  clientFirstName String
+  clientLastName  String
+  clientEmail     String
+}
+
+enum PlanType {
+  DIET
+  TRAINING
+}
